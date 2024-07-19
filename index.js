@@ -4,7 +4,11 @@ const cors = require("cors");
 require("dotenv").config();
 const mongoose = require("mongoose");
 
-mongoose.connect(process.env.DATABASE_URL);
+mongoose.connect(process.env.DATABASE_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 30000,
+});
 
 app.use(cors());
 app.use(express.static("public"));
