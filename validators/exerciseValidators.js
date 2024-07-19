@@ -1,11 +1,16 @@
 const { check, query } = require("express-validator");
 
 const validateExercise = [
-  check(":_id").notEmpty().withMessage("Id is required"),
+  check(":_id")
+    .notEmpty()
+    .isLength({ min: 24, max: 24 })
+    .withMessage("The ID must contain 24 characters."),
   check("description").notEmpty().withMessage("Description is required"),
-  check("duration").isNumeric().withMessage("Duration must be a number"),
+  check("duration")
+    .isInt({ min: 1 })
+    .withMessage("Duration must be a positive number"),
   check("date")
-    .optional()
+    .optional({ checkFalsy: true })
     .isISO8601()
     .withMessage("Date must be in YYYY-MM-DD format"),
 ];
