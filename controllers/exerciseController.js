@@ -16,7 +16,7 @@ const addExercise = async (req, res) => {
   try {
     const user = await User.findById(id);
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.status(404).send("User ID does not exist")
     } else {
       const exerciseObj = new Exercise({
         user_id: user._id,
@@ -48,7 +48,7 @@ const getUserLogs = async (req, res) => {
   const user = await User.findById(id);
 
   if (!user) {
-    return res.status(404).send("User not found");
+    return res.status(404).send("User ID does not exist");
   }
 
   let dateObj = {};
@@ -66,7 +66,8 @@ const getUserLogs = async (req, res) => {
     filter.date = dateObj;
   }
   try {
-    const exercises = await Exercise.find(filter).limit(+limit ?? 20);
+    const allExercises = await Exercise.find(filter).sort({ date: 1 });
+    const exercises = allExercises.slice(0, limit ? parseInt(limit) : 20);
 
     const log = exercises.map((e) => ({
       description: e.description,
@@ -76,7 +77,7 @@ const getUserLogs = async (req, res) => {
 
     res.json({
       username: user.username,
-      count: exercises.length,
+      count: allExercises.length,
       _id: user._id,
       log,
     });
