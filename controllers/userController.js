@@ -7,6 +7,11 @@ const createUser = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
+  const existingUser = await User.findOne({ username: req.body.username });
+  if (existingUser) {
+    return res.status(400).json({ error: "Username already exists" });
+  }
+
   const userObj = new User({ username: req.body.username });
 
   try {
