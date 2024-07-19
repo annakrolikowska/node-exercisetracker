@@ -66,8 +66,10 @@ const getUserLogs = async (req, res) => {
     filter.date = dateObj;
   }
   try {
-    const allExercises = await Exercise.find(filter).sort({ date: 1 });
-    const exercises = allExercises.slice(0, limit ? parseInt(limit) : 20);
+    const allExercises = await Exercise.countDocuments(filter);
+    const exercises = await Exercise.find(filter)
+      .sort({ date: 1 })
+      .limit(limit ? parseInt(limit) : 20);
 
     const log = exercises.map((e) => ({
       description: e.description,
@@ -77,7 +79,7 @@ const getUserLogs = async (req, res) => {
 
     res.json({
       username: user.username,
-      count: allExercises.length,
+      count: allExercises,
       _id: user._id,
       log,
     });
